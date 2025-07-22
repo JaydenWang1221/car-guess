@@ -4,6 +4,20 @@
   <meta charset="UTF-8">
   <title>猜猜哪台車</title>
   <link rel="icon" type="image/png" href="favicon.png">
+
+  <!-- 🌐 Open Graph metadata for link previews -->
+  <meta property="og:title" content="猜猜哪台車！🚗 遊戲挑戰">
+  <meta property="og:description" content="輸入車名，在 10 次機會內猜對是哪一台車，挑戰你的汽車知識！">
+  <meta property="og:image" content="https://yourusername.github.io/preview.jpg">
+  <meta property="og:url" content="https://yourusername.github.io/">
+  <meta property="og:type" content="website">
+
+  <!-- 🐦 Twitter Card (optional) -->
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="猜猜哪台車！🚗 遊戲挑戰">
+  <meta name="twitter:description" content="輸入車名，在 10 次機會內猜對是哪一台車，挑戰你的汽車知識！">
+  <meta name="twitter:image" content="https://yourusername.github.io/preview.jpg">
+
   <style>
     :root {
       --bg-color: #f0f2f5;
@@ -191,30 +205,29 @@
     <div id="result"></div>
   </div>
 
-<!-- Popup 規則視窗 -->
-<div id="rulePopup" class="popup">
-  <div class="popup-content">
-    <span class="close-btn" onclick="closeRulePopup()">❌</span>
-    <h2>遊戲規則</h2>
-    <ul>
-      <li>輸入車名並按 Enter 或點擊猜！</li>
-      <li>每次猜測會顯示該車的資訊與提示。</li>
-      <li><span class="correct">綠色 ✅</span>：完全符合答案</li>
-      <li><span class="partial">黃色 ⚠️</span>：部分符合（例如標籤）</li>
-      <li>有 10 次機會猜出正確車名！</li>
-      <li>顏色是根據**主要配色**（由我指定）進行比對</li>
-      <li>「字數」的計算規則如下：
-        <ul>
-          <li>英文字母與數字：每個算 1</li>
-          <li>中文字：每個算 1</li>
-          <li>特殊符號（如 <code>-</code> 和 <code>.</code>）：**不計入字數**</li>
-        </ul>
-      </li>
-      <li>請使用英文半形的 <code>.</code>，不要用全形 <code>．</code></li>
-    </ul>
+  <!-- Popup 規則視窗 -->
+  <div id="rulePopup" class="popup">
+    <div class="popup-content">
+      <span class="close-btn" onclick="closeRulePopup()">❌</span>
+      <h2>遊戲規則</h2>
+      <ul>
+        <li>輸入車名並按 Enter 或點擊猜！</li>
+        <li>每次猜測會顯示該車的資訊與提示。</li>
+        <li><span class="correct">綠色 ✅</span>：完全符合答案</li>
+        <li><span class="partial">黃色 ⚠️</span>：部分符合（例如標籤）</li>
+        <li>有 10 次機會猜出正確車名！</li>
+        <li>顏色是根據 <strong>主要配色</strong>（由我指定）進行比對</li>
+        <li>「字數」的計算規則如下：
+          <ul>
+            <li>英文字母與數字：每個算 1</li>
+            <li>中文字：每個算 1</li>
+            <li>特殊符號（如 <code>-</code> 和 <code>.</code>）：不計入字數</li>
+          </ul>
+        </li>
+        <li>請使用半形 <code>.</code>，不要用全形 <code>．</code></li>
+      </ul>
+    </div>
   </div>
-</div>
-
 
   <script src="game.js"></script>
   <script>
