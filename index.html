@@ -345,7 +345,9 @@ document.addEventListener("DOMContentLoaded", () => {
     if (e.key === "Enter") submitGuess();
   });
 });
-
+document.getElementById("infoBtn").onclick = () => {
+  document.getElementById("infoPopup").style.display = "block";
+};
 
   </script>
   
