@@ -215,6 +215,14 @@
   </style>
 </head>
 <body>
+  <div id="streakPopup" class="popup">
+  <div class="popup-content">
+    <span class="close-btn" onclick="closeStreakPopup()">❌</span>
+    <h2>答對了！</h2>
+    <p id="streakMessage">目前連勝：0</p>
+    <button onclick="continueStreak()">繼續挑戰</button>
+  </div>
+</div>
   <div id="mode-select">
     <div id="mode-box">
       <h2>選擇遊戲設定</h2>
