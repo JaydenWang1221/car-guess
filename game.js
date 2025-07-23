@@ -436,13 +436,27 @@ if (!guess) {
       } else {
         setTimeout(startGame, 1200);
       }
-    } else if (mode === "streak") {
-      document.getElementById("result").innerText = `${resultText}（目前連勝：${score}）`;
-      setTimeout(() => {
-        document.getElementById("endTitle").innerText = isCorrect ? "答對囉！" : "答錯囉！";
-        document.getElementById("endSummary").innerText = `目前連勝紀錄：${score}`;
-        document.getElementById("endPopup").style.display = "block";
-      }, 1200);
-    }
+    } 
+      else if (mode === "streak") {
+  if (isCorrect) {
+    // Show quick streak message
+    document.getElementById("result").innerText = `🎉 答對了！目前連勝：${score}`;
+    
+    // Clear message and start next round after short delay
+    setTimeout(() => {
+      document.getElementById("result").innerText = "";
+      startGame(); // continue with next answer
+    }, 1200);
+  } else {
+    // Show end popup when failed
+    document.getElementById("result").innerText = `❌ 答錯了！正確答案是 ${answer.name}（連勝紀錄：${score}）`;
+    setTimeout(() => {
+      document.getElementById("endTitle").innerText = "答錯囉！";
+      document.getElementById("endSummary").innerText = `目前連勝紀錄：${score}`;
+      document.getElementById("endPopup").style.display = "block";
+    }, 1200);
+  }
+}
+
   }
 }
