@@ -462,3 +462,6 @@ function continueStreak() {
   document.getElementById("streakPopup").style.display = "none";
   startGame(); // start next round
 }
+function closeInfoPopup() {
+  document.getElementById("infoPopup").style.display = "none";
+}
