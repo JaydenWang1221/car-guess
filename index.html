@@ -1,23 +1,19 @@
 <!DOCTYPE html>
 <html lang="zh-TW">
 <head>
-  <meta charset="UTF-8">
-  <title>猜猜哪台車</title>
-  <link rel="icon" type="image/png" href="favicon.png">
 
-  <!-- 🌐 Open Graph metadata for link previews -->
   <meta property="og:title" content="猜猜哪台車！🚗 遊戲挑戰">
   <meta property="og:description" content="輸入車名，在 10 次機會內猜對是哪一台車，挑戰你的汽車知識！">
   <meta property="og:image" content="https://jaydenwang1221.github.io/car-guess/preview.jpg"">
   <meta property="og:url" content="https://jaydenwang1221.github.io/">
   <meta property="og:type" content="website">
 
-  <!-- 🐦 Twitter Card (optional) -->
-  <meta name="twitter:card" content="summary_large_image">
-  <meta name="twitter:title" content="猜猜哪台車！🚗 遊戲挑戰">
-  <meta name="twitter:description" content="輸入車名，在 10 次機會內猜對是哪一台車，挑戰你的汽車知識！">
-  <meta name="twitter:image" content="https://yourusername.github.io/preview.jpg">
 
+
+
+  <meta charset="UTF-8">
+  <title>猜猜哪台車</title>
+  <link rel="icon" type="image/png" href="favicon.png">
   <style>
     :root {
       --bg-color: #f0f2f5;
@@ -141,7 +137,7 @@
       cursor: pointer;
     }
 
-    .popup {
+    .popup, #endPopup {
       display: none;
       position: fixed;
       top: 50%;
@@ -156,9 +152,10 @@
       box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
       max-width: 90%;
       width: 400px;
+      text-align: center;
     }
 
-    .popup-content h2 {
+    .popup-content h2, #endPopup h2 {
       margin-top: 0;
       text-align: center;
     }
@@ -175,17 +172,83 @@
       color: red;
       cursor: pointer;
     }
+
+    #mode-select {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      background: var(--bg-color);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 1000;
+    }
+
+    #mode-box {
+      background: var(--card-color);
+      border: 2px solid var(--border-color);
+      padding: 30px 40px;
+      border-radius: 16px;
+      text-align: center;
+    }
+
+    select, button {
+      padding: 10px;
+      margin: 12px 0;
+      border-radius: 8px;
+      border: 1px solid var(--border-color);
+      font-size: 16px;
+    }
+
+    #quitBtn {
+      margin-top: 10px;
+      font-size: 14px;
+      padding: 8px 16px;
+      border-radius: 8px;
+      background-color: #d32f2f;
+      color: white;
+      border: none;
+      cursor: pointer;
+    }
   </style>
 </head>
 <body>
-  <div id="game-container">
+  <div id="mode-select">
+    <div id="mode-box">
+      <h2>選擇遊戲設定</h2>
+      <label>難度：
+        <select id="difficultySelect">
+          <option value="easy">簡單</option>
+          <option value="medium" selected>普通</option>
+          <option value="hard">困難</option>
+        </select>
+      </label>
+      <br>
+      <label>模式：
+        <select id="modeSelect">
+          <option value="normal">一般模式</option>
+          <option value="accuracy">正確率模式</option>
+          <option value="streak">連續答對模式</option>
+        </select>
+      </label>
+      <br>
+      <button onclick="startGameFromMode()">開始遊戲</button>
+    </div>
+  </div>
+
+  <div id="game-container" style="display:none">
     <button id="toggleDark">🌙 切換模式</button>
-
     <h1>🚗 猜猜哪台車</h1>
+    <div id="modeInfo" style="text-align:center; font-size:16px; margin-bottom:10px;"></div> 
+    <div id="roundInfo" style="text-align:center; font-size:16px; margin-bottom:10px;"></div>
+    <div id="streakInfo" style="text-align:center; font-size:16px; margin-bottom:10px;"></div>
 
-    <input type="text" id="carName" placeholder="輸入車名並按 Enter" onkeydown="if(event.key==='Enter')submitGuess()">
+    <input type="text" id="carName" placeholder="輸入車名並按 Enter">
 
     <button id="ruleBtn">📘 遊戲規則</button>
+    <button id="quitBtn" onclick="location.reload()">🔙 離開遊戲</button>
 
     <table>
       <thead>
@@ -205,7 +268,6 @@
     <div id="result"></div>
   </div>
 
-  <!-- Popup 規則視窗 -->
   <div id="rulePopup" class="popup">
     <div class="popup-content">
       <span class="close-btn" onclick="closeRulePopup()">❌</span>
@@ -216,7 +278,7 @@
         <li><span class="correct">綠色 ✅</span>：完全符合答案</li>
         <li><span class="partial">黃色 ⚠️</span>：部分符合（例如標籤）</li>
         <li>有 10 次機會猜出正確車名！</li>
-        <li>顏色是根據 <strong>主要配色</strong>（由我指定）進行比對</li>
+        <li>顏色是根據主要配色（由我指定）進行比對</li>
         <li>「字數」的計算規則如下：
           <ul>
             <li>英文字母與數字：每個算 1</li>
@@ -224,30 +286,46 @@
             <li>特殊符號（如 <code>-</code> 和 <code>.</code>）：不計入字數</li>
           </ul>
         </li>
-        <li>請使用半形 <code>.</code>，不要用全形 <code>．</code></li>
+        <li>請使用英文半形的 <code>.</code>，不要用全形 <code>．</code></li>
       </ul>
     </div>
   </div>
 
+  <div id="endPopup">
+    <span class="close-btn" onclick="document.getElementById('endPopup').style.display='none'">❌</span>
+    <h2 id="endTitle"></h2>
+    <p id="endSummary"></p>
+    <button onclick="location.reload()">🔁 再玩一次</button>
+  </div>
+
   <script src="game.js"></script>
   <script>
-    // 深色模式切換
-    const toggleBtn = document.getElementById("toggleDark");
-    toggleBtn.onclick = () => {
+    document.getElementById("toggleDark").onclick = () => {
       document.body.classList.toggle("dark");
     };
 
-    // 規則視窗控制
-    const rulePopup = document.getElementById("rulePopup");
-    const ruleBtn = document.getElementById("ruleBtn");
-
-    ruleBtn.onclick = () => {
-      rulePopup.style.display = "block";
+    document.getElementById("ruleBtn").onclick = () => {
+      document.getElementById("rulePopup").style.display = "block";
     };
 
     function closeRulePopup() {
-      rulePopup.style.display = "none";
+      document.getElementById("rulePopup").style.display = "none";
     }
+
+    function startGameFromMode() {
+      const difficulty = document.getElementById("difficultySelect").value;
+      const mode = document.getElementById("modeSelect").value;
+      localStorage.setItem("game_difficulty", difficulty);
+      localStorage.setItem("game_mode", mode);
+      document.getElementById("mode-select").style.display = "none";
+      document.getElementById("game-container").style.display = "block";
+      if (typeof startGame === "function") startGame();
+    }
+document.addEventListener("DOMContentLoaded", () => {
+  document.getElementById("carName").addEventListener("keydown", (e) => {
+    if (e.key === "Enter") submitGuess();
+  });
+});
   </script>
 </body>
 </html>
