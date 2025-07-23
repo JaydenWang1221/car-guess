@@ -276,7 +276,17 @@
 
     <div id="result"></div>
   </div>
-
+<div id="infoPopup" class="popup">
+  <div class="popup-content">
+    <span class="close-btn" onclick="closeInfoPopup()">❌</span>
+    <h2>遊戲資訊</h2>
+    <ul style="text-align: left;">
+      <li>製作人：淺愛</li>
+      <li>收錄車輛：共 251 台 A/T 車</li>
+      <li>資料日期：2025 年 7 月 23 日</li>
+    </ul>
+  </div>
+</div>
   <div id="rulePopup" class="popup">
     <div class="popup-content">
       <span class="close-btn" onclick="closeRulePopup()">❌</span>
@@ -335,17 +345,7 @@ document.addEventListener("DOMContentLoaded", () => {
     if (e.key === "Enter") submitGuess();
   });
 });
-<div id="infoPopup" class="popup">
-  <div class="popup-content">
-    <span class="close-btn" onclick="closeInfoPopup()">❌</span>
-    <h2>遊戲資訊</h2>
-    <ul style="text-align: left;">
-      <li>製作人：淺愛</li>
-      <li>收錄車輛：共 251 台 A/T 車</li>
-      <li>資料日期：2025 年 7 月 23 日</li>
-    </ul>
-  </div>
-</div>
+
 
   </script>
 </body>
