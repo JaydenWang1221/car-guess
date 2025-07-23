@@ -437,19 +437,12 @@ if (!guess) {
         setTimeout(startGame, 1200);
       }
     } 
-      else if (mode === "streak") {
+else if (mode === "streak") {
   if (isCorrect) {
-    // Show quick streak message
-    document.getElementById("result").innerText = `🎉 答對了！目前連勝：${score}`;
-    
-    // Clear message and start next round after short delay
-    setTimeout(() => {
-      document.getElementById("result").innerText = "";
-      startGame(); // continue with next answer
-    }, 1200);
+    document.getElementById("streakMessage").innerText = `目前連勝：${score}`;
+    document.getElementById("streakPopup").style.display = "block";
   } else {
-    // Show end popup when failed
-    document.getElementById("result").innerText = `❌ 答錯了！正確答案是 ${answer.name}（連勝紀錄：${score}）`;
+    document.getElementById("result").innerText = `❌ 答錯了！正確答案是 ${answer.name}（連勝紀錄：${score})`;
     setTimeout(() => {
       document.getElementById("endTitle").innerText = "答錯囉！";
       document.getElementById("endSummary").innerText = `目前連勝紀錄：${score}`;
@@ -458,5 +451,14 @@ if (!guess) {
   }
 }
 
+
   }
+}
+function closeStreakPopup() {
+  document.getElementById("streakPopup").style.display = "none";
+}
+
+function continueStreak() {
+  document.getElementById("streakPopup").style.display = "none";
+  startGame(); // start next round
 }
