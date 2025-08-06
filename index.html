@@ -1,16 +1,11 @@
 <!DOCTYPE html>
 <html lang="zh-TW">
 <head>
-
   <meta property="og:title" content="猜猜哪台車！🚗 遊戲挑戰">
   <meta property="og:description" content="輸入車名，在 10 次機會內猜對是哪一台A/T車，挑戰你的極速領域知識！">
   <meta property="og:image" content="https://jaydenwang1221.github.io/car-guess/preview.jpg">
   <meta property="og:url" content="https://jaydenwang1221.github.io/">
   <meta property="og:type" content="website">
-
-
-
-
   <meta charset="UTF-8">
   <title>猜猜哪台車</title>
   <link rel="icon" type="image/png" href="favicon.png">
@@ -23,7 +18,6 @@
       --correct-color: #c8e6c9;
       --partial-color: #fff9c4;
     }
-
     body.dark {
       --bg-color: #1e1e1e;
       --text-color: #eee;
@@ -32,7 +26,6 @@
       --correct-color: #388e3c;
       --partial-color: #bfa600;
     }
-
     body {
       font-family: sans-serif;
       background-color: var(--bg-color);
@@ -41,7 +34,6 @@
       margin: 0;
       transition: background-color 0.3s, color 0.3s;
     }
-
     #game-container {
       max-width: 800px;
       margin: auto;
@@ -51,12 +43,7 @@
       padding: 30px 40px;
       position: relative;
     }
-
-    h1 {
-      text-align: center;
-      color: var(--text-color);
-    }
-
+    h1 { text-align: center; color: var(--text-color); }
     #carName {
       width: 100%;
       font-size: 18px;
@@ -68,21 +55,35 @@
       background: var(--card-color);
       color: var(--text-color);
     }
-
+    /* Autocomplete dropdown */
+    #suggestions {
+      border: 1px solid var(--border-color);
+      border-top: none;
+      background: var(--card-color);
+      position: absolute;
+      width: calc(100% - 80px);
+      max-height: 150px;
+      overflow-y: auto;
+      display: none;
+      z-index: 100;
+    }
+    .suggestion-item {
+      padding: 8px;
+      cursor: pointer;
+    }
+    .suggestion-item:hover { background-color: var(--partial-color); }
     table {
       width: 100%;
       border-spacing: 12px;
       margin-top: 20px;
       margin-bottom: 30px;
     }
-
     th {
       background-color: var(--border-color);
       border-radius: 8px;
       padding: 12px;
       color: var(--text-color);
     }
-
     td {
       background-color: var(--card-color);
       border-radius: 12px;
@@ -91,21 +92,9 @@
       font-size: 16px;
       border: 1px solid var(--border-color);
     }
-
-    .correct {
-      background-color: var(--correct-color);
-      font-weight: bold;
-    }
-
-    .partial {
-      background-color: var(--partial-color);
-      font-weight: bold;
-    }
-
-    .guess-row td {
-      height: 50px;
-    }
-
+    .correct { background-color: var(--correct-color); font-weight: bold; }
+    .partial { background-color: var(--partial-color); font-weight: bold; }
+    .guess-row td { height: 50px; }
     #result {
       text-align: center;
       font-size: 20px;
@@ -114,7 +103,6 @@
       border-radius: 8px;
       background-color: var(--card-color);
     }
-
     #toggleDark {
       position: absolute;
       top: 20px;
@@ -124,7 +112,6 @@
       border-radius: 6px;
       cursor: pointer;
     }
-
     #ruleBtn {
       display: block;
       margin: 0 auto 20px auto;
@@ -136,7 +123,6 @@
       color: white;
       cursor: pointer;
     }
-
     .popup, #endPopup {
       display: none;
       position: fixed;
@@ -154,16 +140,8 @@
       width: 400px;
       text-align: center;
     }
-
-    .popup-content h2, #endPopup h2 {
-      margin-top: 0;
-      text-align: center;
-    }
-
-    .popup-content ul {
-      padding-left: 20px;
-    }
-
+    .popup-content h2, #endPopup h2 { margin-top: 0; text-align: center; }
+    .popup-content ul { padding-left: 20px; }
     .close-btn {
       position: absolute;
       top: 12px;
@@ -172,7 +150,6 @@
       color: red;
       cursor: pointer;
     }
-
     #mode-select {
       position: fixed;
       top: 0;
@@ -185,7 +162,6 @@
       justify-content: center;
       z-index: 1000;
     }
-
     #mode-box {
       background: var(--card-color);
       border: 2px solid var(--border-color);
@@ -193,7 +169,6 @@
       border-radius: 16px;
       text-align: center;
     }
-
     select, button {
       padding: 10px;
       margin: 12px 0;
@@ -201,8 +176,7 @@
       border: 1px solid var(--border-color);
       font-size: 16px;
     }
-
-    #quitBtn {
+    #quitBtn, #lookupBtn {
       margin-top: 10px;
       font-size: 14px;
       padding: 8px 16px;
@@ -212,17 +186,25 @@
       border: none;
       cursor: pointer;
     }
+    #lookupPopup table, #lookupPopup th, #lookupPopup td {
+      border: 1px solid var(--border-color);
+      padding: 6px;
+      text-align: center;
+    }
+    #lookupPopup th { background-color: var(--border-color); }
+    .details-col { display: none; }
   </style>
 </head>
 <body>
   <div id="streakPopup" class="popup">
-  <div class="popup-content">
-    <span class="close-btn" onclick="closeStreakPopup()">❌</span>
-    <h2>答對了！</h2>
-    <p id="streakMessage">目前連勝：0</p>
-    <button onclick="continueStreak()">繼續挑戰</button>
+    <div class="popup-content">
+      <span class="close-btn" onclick="closeStreakPopup()">❌</span>
+      <h2>答對了！</h2>
+      <p id="streakMessage">目前連勝：0</p>
+      <button onclick="continueStreak()">繼續挑戰</button>
+    </div>
   </div>
-</div>
+
   <div id="mode-select">
     <div id="mode-box">
       <h2>選擇遊戲設定</h2>
@@ -232,16 +214,14 @@
           <option value="medium" selected>普通</option>
           <option value="hard">困難</option>
         </select>
-      </label>
-      <br>
+      </label><br>
       <label>模式：
         <select id="modeSelect">
           <option value="normal">一般模式</option>
           <option value="accuracy">正確率模式</option>
           <option value="streak">連續答對模式</option>
         </select>
-      </label>
-      <br>
+      </label><br>
       <button onclick="startGameFromMode()">開始遊戲</button>
     </div>
   </div>
@@ -254,10 +234,12 @@
     <div id="streakInfo" style="text-align:center; font-size:16px; margin-bottom:10px;"></div>
 
     <input type="text" id="carName" placeholder="輸入車名並按 Enter">
+    <div id="suggestions"></div>
 
     <button id="ruleBtn">📘 遊戲規則</button>
     <button id="quitBtn" onclick="location.reload()">🔙 離開遊戲</button>
     <button id="infoBtn">ℹ️ 遊戲資訊</button>
+    <button id="lookupBtn">📜 車輛列表</button>
 
     <table>
       <thead>
@@ -276,17 +258,39 @@
 
     <div id="result"></div>
   </div>
-<div id="infoPopup" class="popup">
-  <div class="popup-content">
-    <span class="close-btn" onclick="closeInfoPopup()">❌</span>
-    <h2>遊戲資訊</h2>
-    <ul style="text-align: left;">
-      <li>製作人：淺愛</li>
-      <li>收錄車輛：共 251 台 A/T 車</li>
-      <li>資料日期：2025 年 7 月 23 日</li>
-    </ul>
+
+  <div id="infoPopup" class="popup">
+    <div class="popup-content">
+      <span class="close-btn" onclick="closeInfoPopup()">❌</span>
+      <h2>遊戲資訊</h2>
+      <ul style="text-align: left;">
+        <li>製作人：淺愛</li>
+        <li>收錄車輛：共 251 台 A/T 車</li>
+        <li>資料日期：2025 年 7 月 23 日</li>
+      </ul>
+    </div>
   </div>
-</div>
+
+  <div id="lookupPopup" class="popup">
+    <div class="popup-content" style="max-height: 70vh; overflow-y: auto;">
+      <span class="close-btn" onclick="closeLookupPopup()">❌</span>
+      <h2>車輛查詢</h2>
+      <label><input type="checkbox" id="toggleDetails"> 顯示詳細資訊</label>
+      <table style="width:100%; border-collapse: collapse; margin-top:10px;">
+        <thead>
+          <tr>
+            <th>車名</th>
+            <th class="details-col">顏色</th>
+            <th class="details-col">車廠</th>
+            <th class="details-col">系列</th>
+            <th class="details-col">標籤</th>
+          </tr>
+        </thead>
+        <tbody id="lookupTable"></tbody>
+      </table>
+    </div>
+  </div>
+
   <div id="rulePopup" class="popup">
     <div class="popup-content">
       <span class="close-btn" onclick="closeRulePopup()">❌</span>
@@ -319,18 +323,9 @@
 
   <script src="game.js"></script>
   <script>
-    document.getElementById("toggleDark").onclick = () => {
-      document.body.classList.toggle("dark");
-    };
-
-    document.getElementById("ruleBtn").onclick = () => {
-      document.getElementById("rulePopup").style.display = "block";
-    };
-
-    function closeRulePopup() {
-      document.getElementById("rulePopup").style.display = "none";
-    }
-
+    document.getElementById("toggleDark").onclick = () => document.body.classList.toggle("dark");
+    document.getElementById("ruleBtn").onclick = () => document.getElementById("rulePopup").style.display = "block";
+    function closeRulePopup() { document.getElementById("rulePopup").style.display = "none"; }
     function startGameFromMode() {
       const difficulty = document.getElementById("difficultySelect").value;
       const mode = document.getElementById("modeSelect").value;
@@ -340,16 +335,46 @@
       document.getElementById("game-container").style.display = "block";
       if (typeof startGame === "function") startGame();
     }
-document.addEventListener("DOMContentLoaded", () => {
-  document.getElementById("carName").addEventListener("keydown", (e) => {
-    if (e.key === "Enter") submitGuess();
-  });
-});
-document.getElementById("infoBtn").onclick = () => {
-  document.getElementById("infoPopup").style.display = "block";
-};
-
+    document.addEventListener("DOMContentLoaded", () => {
+      const input = document.getElementById("carName");
+      const suggestions = document.getElementById("suggestions");
+      input.addEventListener("input", () => {
+        const query = input.value.trim();
+        suggestions.innerHTML = "";
+        if (!query) { suggestions.style.display = "none"; return; }
+        const matches = carDB.filter(car => car.name.includes(query));
+        matches.forEach(car => {
+          const div = document.createElement("div");
+          div.className = "suggestion-item";
+          div.textContent = car.name;
+          div.onclick = () => { input.value = car.name; suggestions.style.display = "none"; };
+          suggestions.appendChild(div);
+        });
+        suggestions.style.display = matches.length ? "block" : "none";
+      });
+      input.addEventListener("keydown", e => { if (e.key === "Enter") { suggestions.style.display = "none"; submitGuess(); } });
+    });
+    document.getElementById("infoBtn").onclick = () => document.getElementById("infoPopup").style.display = "block";
+    function closeInfoPopup() { document.getElementById("infoPopup").style.display = "none"; }
+    document.getElementById("lookupBtn").onclick = () => {
+      const tbody = document.getElementById("lookupTable");
+      tbody.innerHTML = "";
+      carDB.forEach(car => {
+        const tr = document.createElement("tr");
+        tr.innerHTML = `
+          <td>${car.name}</td>
+          <td class="details-col">${car.color}</td>
+          <td class="details-col">${car.brand}</td>
+          <td class="details-col">${car.series}</td>
+          <td class="details-col">${car.tags.join(", ")}</td>`;
+        tbody.appendChild(tr);
+      });
+      document.getElementById("lookupPopup").style.display = "block";
+    };
+    document.getElementById("toggleDetails").addEventListener("change", function () {
+      document.querySelectorAll(".details-col").forEach(col => col.style.display = this.checked ? "table-cell" : "none");
+    });
+    function closeLookupPopup() { document.getElementById("lookupPopup").style.display = "none"; }
   </script>
-  
 </body>
 </html>
